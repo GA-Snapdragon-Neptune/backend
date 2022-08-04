@@ -20,6 +20,11 @@ app.get('/', (req, res) => {
 const foodTrucksController = require('./controllers/foodTrucksController');
 app.use('/foodtrucks', foodTrucksController);
 
+const reviewsController = require('./controllers/reviewsController');
+app.use('/reviews', reviewsController);
+
+const usersController = require('./controllers/usersController');
+app.use('/users', usersController);
 
 app.listen(app.get('port'), () => {
 	console.log('connected');

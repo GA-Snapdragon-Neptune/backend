@@ -4,46 +4,58 @@ const FoodTruck = require('../db/models/FoodTruck');
 const router = express.Router();
 
 // Index: Get all food trucks
-router.get('/', (req, res) => {
+router.get('/', (req, res, next) => {
 	FoodTruck.find({}).then((foodTruck) => {
 		res.json(foodTruck);
-	});
+	})
+	.catch(next)
 });
 
 // Show: Get one food truck by id
-router.get('/:id', (req, res) => {
+router.get('/:id', (req, res, next) => {
 	FoodTruck.findById({ _id: req.params.id }).then((foodTruck) => {
-		res.json(foodTruck);
+		if (foodTruck) {
+			res.json(foodTruck)
+		} else {
+			res.sendStatus(404)
+			.catch(next)
+		}
 	});
 });
 
-// Show: Get one food truck by flavor
-router.get('/flavors/:flavor', (req, res) => {
-	FoodTruck.findOne({ flavor: req.params.flavor }).then((foodTruck) => {
-		res.json(foodTruck);
-	});
-});
-
-// Create: Add an food truck
+// Create: Add a food truck
 router.post('/', (req, res) => {
 	FoodTruck.create(req.body).then((foodTruck) => {
 		res.status(201).json(foodTruck);
 	});
 });
 
-// Update: Edit an food truck by id
-router.put('/:id', (req, res) => {
-	FoodTruck.findByIdAndUpdate({ _id: req.params.id }, req.body, {
-		new: true,
-	}).then((foodTruck) => {
-		res.json(foodTruck);
+// Update: Edit a food truck by id
+router.put('/:id', (req, res, next) => {
+	FoodTruck.findByIdAndUpdate(
+		{ _id: req.params.id }, 
+		req.body, 
+		{ new: true, })
+		.then((foodTruck) => {
+			if (foodTruck) {
+				res.json(foodTruck);
+			} else {
+				res.sendStatus(404)
+				.catch(next)
+			}
 	});
 });
 
-// Delete: Remove an food truck by id
-router.delete('/:id', (req, res) => {
-	FoodTruck.findByIdAndDelete({ _id: req.params.id }).then((delCone) => {
-		res.json(delCone);
+// Delete: Remove a food truck by id
+router.delete('/:id', (req, res, next) => {
+	FoodTruck.findByIdAndDelete({ _id: req.params.id })
+	.then((foodTruck) => {
+		if (foodTruck) {
+			res.json(foodTruck);
+		} else {
+			res.sendStatus(404)
+			.catch(next)
+		}
 	});
 });
 
