@@ -21,6 +21,6 @@ router.get('/:foodTruckId', async (req, res, next) => {
   })
   
 
-
+router.get('/:foodTruckId/:reviewId', (req, res, next) =>)
 
 module.exports = router;
