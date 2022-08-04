@@ -5,8 +5,14 @@ const reviewSchema = require('./Review')
 
 const FoodTruckSchema = new Schema(
     {
-        name: String,
-        location: String,
+        name: {
+            type: String,
+            required: true,
+        },
+        location: {
+            type: String,
+            required: true,
+        },
         menu: [ {
             name: String,
             price: Number,
