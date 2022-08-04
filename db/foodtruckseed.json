@@ -1,0 +1,24 @@
+[
+	{
+		"name": "5 Elementos",
+		"location": "17901 Von Karman Ave, Irvine, CA 92614",
+        "menu": [
+            {
+                "name": "Macho Nachos",
+                "price": 13.50,
+                "description": "Fresh Tortilla Chips, drizzled with Melted Queso, and topped with Black Beans, Pico de Gallo, Jalapeno Crema, Chipotle Crema, and Guacamole. Comes with your choice of Protein (gf/vg/v)"
+            },
+            {
+                "name": "Elementos Fries",
+                "price": 14.00,
+                "description": "Crisp Seasoned Fries, drizzled with Melted Queso, and topped with Black Beans, Pico de Gallo, Jalapeno Crema, Chipotle Crema, and Guacamole. Served with your choice of Protein (gf/vg/v)"
+            }
+        ],
+        "reviews": [
+            {
+                "title": "amazing",
+                "body": "great food"
+            }
+        ]
+	}
+]

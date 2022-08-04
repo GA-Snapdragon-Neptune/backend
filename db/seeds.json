@@ -1,0 +1,22 @@
+[
+	{
+		"flavor": "Vanilla",
+		"varieties": 143,
+        "delicious": true
+	},
+	{
+		"flavor": "Chocolate",
+		"varieties": 16,
+        "delicious": true
+	},
+	{
+		"flavor": "Strawberry",
+		"varieties": 71,
+        "delicious": true
+	},
+	{
+		"flavor": "Chair",
+		"varieties": 1000,
+        "delicious": true
+	}
+]
