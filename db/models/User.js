@@ -6,6 +6,15 @@ const UserSchema = new Schema(
         username: String,
         email: String,
         password: String,
+    },
+    {
+        toJSON: {
+            virtuals: true,
+            transform: (_doc, ret) => {
+                delete ret.password;
+                return ret;
+            }
+        }
     }
 )
 
