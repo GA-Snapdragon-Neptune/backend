@@ -28,21 +28,21 @@ router.get('/:id', (req, res, next) => {
 });
 
 // Create: Add a food truck
-router.post('/', requireToken, (req, res) => {
+router.post('/', (req, res) => {
 	FoodTruck.create(req.body).then((foodTruck) => {
 		res.status(201).json(foodTruck);
 	});
 });
 
 // Update: Edit a food truck by id
-router.put('/:id',requireToken, (req, res, next) => {
+router.put('/:id', (req, res, next) => {
 	FoodTruck.findByIdAndUpdate(
 		{ _id: req.params.id }, 
 		req.body, 
 		{ new: true, })
 		.then((foodTruck) => {
 			if (foodTruck) {
-				// console.log(foodTruck.owner._id);
+				console.log(req.user._id);
 				res.json(foodTruck);
 			} else {
 				res.sendStatus(404)
@@ -52,7 +52,7 @@ router.put('/:id',requireToken, (req, res, next) => {
 });
 
 // Delete: Remove a food truck by id
-router.delete('/:id',requireToken, (req, res, next) => {
+router.delete('/:id', (req, res, next) => {
 	FoodTruck.findByIdAndDelete({ _id: req.params.id })
 	.then((foodTruck) => {
 		if (foodTruck) {

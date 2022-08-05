@@ -23,7 +23,7 @@ router.get('/:foodTruckId/:reviewId', (req, res, next) =>{
     .populate('reviews.author')
     .then((foodTruck) => {
         if(foodTruck) {
-            const foundReview=foodTruck.reviews.find(review=>review._id.toString()=== req.params.reviewId)
+            const foundReview=foodTruck.reviews.find(review=>review._id.toString() === req.params.reviewId)
             if (foundReview) {
                 res.json(foundReview)
             }
@@ -37,7 +37,7 @@ router.get('/:foodTruckId/:reviewId', (req, res, next) =>{
 })
 
 
-router.post('/', requireToken, (req, res, next) => {
+router.post('/', (req, res, next) => {
     const foodTruckId = req.body.foodTruckId;
     FoodTruck.findById(foodTruckId)
     .then((foodTruck) => {
@@ -51,10 +51,11 @@ router.post('/', requireToken, (req, res, next) => {
     .catch(next)
 })
 
-router.delete('/:foodTruckId/:reviewId' , requireToken, (req, res, next)=>{
+router.delete('/:foodTruckId/:reviewId' , (req, res, next)=>{
     FoodTruck.findById(req.params.foodTruckId)
     .then((foodTruck)=>{
-        if(foodTruck){
+        console.log(foodTruck.reviews.author)
+        if(foodTruck ){
             foodTruck.reviews.id(req.params.reviewId).remove()
             foodTruck.save()
             res.sendStatus(204)
@@ -65,16 +66,23 @@ router.delete('/:foodTruckId/:reviewId' , requireToken, (req, res, next)=>{
     .catch(next)
 })
 
-router.put('/:reviewId', requireToken, (req, res, next) => {
+router.put('/:reviewId', (req, res, next) => {
     const reviewId = req.params.reviewId
     FoodTruck.findOne({
         'reviews._id': reviewId,
     })
     .then((foodTruck)=>{
         if (foodTruck) {
-            const review = foodTruck.reviews.id(reviewId)
-            review.set(req.body)
-            return foodTruck.save()
+            const foundReview = foodTruck.reviews.id(reviewId)
+            const signedIn = req.user._id
+            const author = foundReview.author
+
+            if (foundReview) {
+                foundReview.set(req.body)
+                return foodTruck.save()
+            } else {
+                res.sendStatus(404)    
+            }
         } else {
             res.sendStatus(404)
         }
