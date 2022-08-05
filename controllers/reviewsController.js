@@ -2,6 +2,7 @@ const express = require ('express')
 const router = express.Router()
 
 const FoodTruck = require('../db/models/FoodTruck');
+const { requireToken } = require('../middleware/auth');
 
 router.get('/:foodTruckId',(req,res,next)=>{
     FoodTruck.findById(req.params.foodTruckId)
@@ -36,7 +37,7 @@ router.get('/:foodTruckId/:reviewId', (req, res, next) =>{
 })
 
 
-router.post('/', (req, res, next) => {
+router.post('/', requireToken, (req, res, next) => {
     const foodTruckId = req.body.foodTruckId;
     FoodTruck.findById(foodTruckId)
     .then((foodTruck) => {
@@ -50,7 +51,7 @@ router.post('/', (req, res, next) => {
     .catch(next)
 })
 
-router.delete('/:foodTruckId/:reviewId',(req, res, next)=>{
+router.delete('/:foodTruckId/:reviewId' , requireToken, (req, res, next)=>{
     FoodTruck.findById(req.params.foodTruckId)
     .then((foodTruck)=>{
         if(foodTruck){
@@ -64,7 +65,7 @@ router.delete('/:foodTruckId/:reviewId',(req, res, next)=>{
     .catch(next)
 })
 
-router.put('/:reviewId', (req, res, next) => {
+router.put('/:reviewId', requireToken, (req, res, next) => {
     const reviewId = req.params.reviewId
     FoodTruck.findOne({
         'reviews._id': reviewId,
