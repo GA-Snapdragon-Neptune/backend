@@ -67,7 +67,7 @@ router.delete('/:foodTruckId/:reviewId',(req, res, next)=>{
 router.put('/:reviewId', (req, res, next) => {
     const reviewId = req.params.reviewId
     FoodTruck.findOne({
-        'reviews._id': id,
+        'reviews._id': reviewId,
     })
     .then((foodTruck)=>{
         if (foodTruck) {
