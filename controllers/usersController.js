@@ -18,9 +18,9 @@ router.get('/:id', (req, res, next) => {
             res.json(user);
         } else {
             res.sendStatus(404)
-            .catch(next)
         }
-	});
+	})
+    .catch(next)
 });
 
 // Create: Add an user
@@ -41,9 +41,9 @@ router.put('/:id', (req, res, next) => {
                 res.json(user);
             } else {
                 res.sendStatus(404)
-                .catch(next)
             }
-	});
+        })
+        .catch(next)
 });
 
 // Delete: Remove an user by id
@@ -54,9 +54,9 @@ router.delete('/:id', (req, res, next) => {
             res.json(user);
         } else {
             res.sendStatus(404)
-            .catch(next)
         }
-	});
+	})
+    .catch(next)
 });
 
 module.exports = router;

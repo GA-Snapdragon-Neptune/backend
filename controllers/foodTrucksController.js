@@ -6,7 +6,7 @@ const router = express.Router();
 // Index: Get all food trucks
 router.get('/', (req, res, next) => {
 	FoodTruck.find({}).then((foodTruck) => {
-		res.json(foodTruck);
+		res.status(200).json(foodTruck);
 	})
 	.catch(next)
 });
@@ -15,12 +15,12 @@ router.get('/', (req, res, next) => {
 router.get('/:id', (req, res, next) => {
 	FoodTruck.findById({ _id: req.params.id }).then((foodTruck) => {
 		if (foodTruck) {
-			res.json(foodTruck)
+			res.status(200).json(foodTruck)
 		} else {
 			res.sendStatus(404)
-			.catch(next)
 		}
-	});
+	})
+	.catch(next)
 });
 
 // Create: Add a food truck
@@ -41,9 +41,9 @@ router.put('/:id', (req, res, next) => {
 				res.json(foodTruck);
 			} else {
 				res.sendStatus(404)
-				.catch(next)
 			}
-	});
+		})
+		.catch(next)
 });
 
 // Delete: Remove a food truck by id
@@ -54,9 +54,9 @@ router.delete('/:id', (req, res, next) => {
 			res.json(foodTruck);
 		} else {
 			res.sendStatus(404)
-			.catch(next)
 		}
-	});
+	})
+	.catch(next)
 });
 
 module.exports = router;
