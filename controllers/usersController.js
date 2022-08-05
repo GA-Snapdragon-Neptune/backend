@@ -61,6 +61,7 @@ router.post('/signin', (req, res, next)=>{
 
 // Update: Edit an user by id
 router.put('/:id', requireToken, (req, res, next) => {
+    if(req.params.id.toString()===req.user._id.toString()) {
 	User.findByIdAndUpdate(
         { _id: req.params.id },
         req.body,
@@ -73,19 +74,26 @@ router.put('/:id', requireToken, (req, res, next) => {
             }
         })
         .catch(next)
+    }else {
+        res.sendStatus(401)
+    }
 });
 
 // Delete: Remove an user by id
 router.delete('/:id', requireToken, (req, res, next) => {
-	User.findByIdAndDelete({ _id: req.params.id })
-    .then((user) => {
-        if (user) {
-            res.json(user);
-        } else {
-            res.sendStatus(404)
-        }
-	})
-    .catch(next)
+    if(req.params.id.toString()===req.user._id.toString()) {
+        User.findByIdAndDelete({ _id: req.params.id })
+        .then((user) => {
+            if (user) {
+                res.json(user);
+            } else {
+                res.sendStatus(404)
+            }   
+        })
+        .catch(next)
+    } else {
+        res.sendStatus(401)
+    }
 });
 
 module.exports = router;

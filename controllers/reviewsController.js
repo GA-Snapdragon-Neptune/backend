@@ -41,9 +41,14 @@ router.post('/', requireToken, (req, res, next) => {
     const foodTruckId = req.body.foodTruckId;
     FoodTruck.findById(foodTruckId)
     .then((foodTruck) => {
+        const requestor = req.user._id.toString()
         if (foodTruck) {
-            foodTruck.reviews.push(req.body)
-            return foodTruck.save()
+            if (requestor) {
+                foodTruck.reviews.push(req.body)
+                return foodTruck.save()
+            } else {
+                res.sendStatus(401)
+            }
         } else {
             res.sendStatus(404)
         }})
@@ -55,9 +60,19 @@ router.delete('/:foodTruckId/:reviewId' , requireToken, (req, res, next)=>{
     FoodTruck.findById(req.params.foodTruckId)
     .then((foodTruck)=>{
         if(foodTruck){
-            foodTruck.reviews.id(req.params.reviewId).remove()
-            foodTruck.save()
-            res.sendStatus(204)
+            const foundReview = foodTruck.reviews.id(req.params.reviewId)
+            if (!foundReview) {
+                return res.sendStatus(404)
+            }
+            const author = foundReview.author.toString()
+            const requestor = req.user._id.toString()
+            if (foundReview && author === requestor) {
+                foundReview.remove()
+                foodTruck.save()
+                res.sendStatus(204)
+            } else if (author !== requestor){
+                res.sendStatus(401)
+            }
         } else {
             res.sendStatus(404)
         }
@@ -72,14 +87,22 @@ router.put('/:reviewId', requireToken, (req, res, next) => {
     })
     .then((foodTruck)=>{
         if (foodTruck) {
-            const review = foodTruck.reviews.id(reviewId)
-            review.set(req.body)
-            return foodTruck.save()
+            const foundReview = foodTruck.reviews.id(reviewId)
+            const author = foundReview.author.toString()
+            const requestor = req.user._id.toString()
+            if (foundReview && author === requestor) {
+                foundReview.set(req.body)
+                foodTruck.save()
+                return res.status(201).json( { foodTruck: foodTruck } )
+            } else if (author !== requestor){
+                res.sendStatus(401)
+            } else {
+                res.sendStatus(404)
+            }
         } else {
             res.sendStatus(404)
         }
     })
-    .then((foodTruck)=>res.status(201).json( { foodTruck: foodTruck } ))
     .catch(next)
 })
 

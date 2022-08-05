@@ -4,6 +4,7 @@ const FoodTruck = require('../db/models/FoodTruck');
 const router = express.Router();
 const { requireToken } = require('../middleware/auth');
 
+const User = require('../db/models/User');
 
 // Index: Get all food trucks
 router.get('/', (req, res, next) => {
@@ -28,39 +29,74 @@ router.get('/:id', (req, res, next) => {
 });
 
 // Create: Add a food truck
-router.post('/', requireToken, (req, res) => {
-	FoodTruck.create(req.body).then((foodTruck) => {
-		res.status(201).json(foodTruck);
-	});
+router.post('/', requireToken, (req, res, next) => {
+	const requestor = req.user._id.toString()
+	User.findById({_id: requestor})
+	.then((user) => {
+		if (user && user.business === true) {
+			FoodTruck.create(req.body)
+			.then((foodTruck) => {
+				return res.status(201).json(foodTruck);
+			})
+			.catch(next)
+		} else {
+			res.sendStatus(401)
+		}
+	})
+	.catch(next)
 });
 
 // Update: Edit a food truck by id
-router.put('/:id',requireToken, (req, res, next) => {
-	FoodTruck.findByIdAndUpdate(
-		{ _id: req.params.id }, 
-		req.body, 
-		{ new: true, })
-		.then((foodTruck) => {
-			if (foodTruck) {
-				// console.log(foodTruck.owner._id);
-				res.json(foodTruck);
-			} else {
-				res.sendStatus(404)
-			}
-		})
-		.catch(next)
+router.put('/:id', requireToken, (req, res, next) => {
+	const requestor = req.user._id.toString()
+	User.findById({_id: requestor})
+	.then((user) => {
+		if (user && user.business === true) {
+			FoodTruck.findByIdAndUpdate(
+				{ _id: req.params.id }, 
+				req.body, 
+				{ new: true, })
+				.then((foodTruck) => {
+					if (foodTruck) {
+						if (foodTruck.owner._id.toString() === requestor){
+							res.json(foodTruck);
+						} else {
+							res.sendStatus(401)
+						}
+					} else {
+						res.sendStatus(404)
+					}
+				})
+				.catch(next)
+		} else {
+			res.sendStatus(401)
+		}
+	})
+	.catch(next)
 });
 
 // Delete: Remove a food truck by id
 router.delete('/:id',requireToken, (req, res, next) => {
-	FoodTruck.findByIdAndDelete({ _id: req.params.id })
-	.then((foodTruck) => {
-		if (foodTruck) {
-			res.json(foodTruck);
-		} else {
-			res.sendStatus(404)
-		}
-	})
+	// saves the requestor id
+	const requestor = req.user._id.toString()
+	// finds the user with the requestor id
+	User.findById({_id: requestor})
+	.then((user) => {
+		FoodTruck.findById({_id: req.params.id})
+		.then((foodTruck) => {
+			// checks if requestor is a business
+			if (user.business === true && foodTruck.owner._id.toString() === requestor) {
+				FoodTruck.findByIdAndDelete({ _id: req.params.id })
+				.then((foodTruck) => {
+					res.json(foodTruck);
+					})
+			} else {
+				res.sendStatus(401)
+			}
+		})
+		.catch(next)
+
+		})
 	.catch(next)
 });
 
