@@ -22,8 +22,7 @@ const FoodTruckSchema = new Schema(
         ratings: Array,
         owner: {
             type: mongoose.Schema.Types.ObjectId,
-            ref: 'User',
-            required: true
+            ref: 'User'
         },
         hours: [ {
             day: String,
