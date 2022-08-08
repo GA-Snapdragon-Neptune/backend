@@ -14,7 +14,7 @@ app.use(helmet());
 const { handleErrors } = require('./middleware/custom_errors');
 app.use(handleErrors);
 
-app.set('port', process.env.PORT || 3000);
+app.set('port', process.env.PORT || 8000);
 
 // Redirect
 app.get('/', (req, res) => {

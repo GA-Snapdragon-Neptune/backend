@@ -53,9 +53,19 @@ router.post('/signup', (req, res, next) => {
 
 // user sign in
 router.post('/signin', (req, res, next)=>{
+    // grabs the id of the signed in user
+    let id = ''
+    User.findOne({email: req.body.email})
+    .then(user => {
+        if (user) {
+            id = user._id
+        }
+    })
+    .catch(next)
+    // generates token for the signed in user, and sends back response with token and id
     User.findOne({email: req.body.email})
     .then((user)=> createUserToken(req, user))
-    .then((token)=> res.json({token}))
+    .then((token)=> res.json({token: token, id: id}))
     .catch(next)
 })
 
