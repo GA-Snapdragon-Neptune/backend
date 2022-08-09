@@ -74,8 +74,6 @@ router.put('/:reviewId', (req, res, next) => {
     .then((foodTruck)=>{
         if (foodTruck) {
             const foundReview = foodTruck.reviews.id(reviewId)
-            const signedIn = req.user._id
-            const author = foundReview.author
 
             if (foundReview) {
                 foundReview.set(req.body)
