@@ -52,15 +52,29 @@ router.post('/signup', (req, res, next) => {
 })
 
 // user sign in
-router.post('/signin', (req, res, next)=>{
-    User.findOne({email: req.body.email})
+router.post('/signin', async (req, res, next)=>{
+    // grabs the id of the signed in user
+    let id = ''
+    let role = ''
+    await User.findOne({email: req.body.email})
+    .then(user => {
+        if (user) {
+            id = user._id
+            if (user.consumer) role = 'consumer'
+            if (user.business) role = 'business'
+        }
+    })
+    .catch(next)
+    // generates token for the signed in user, and sends back response with token and id
+    await User.findOne({email: req.body.email})
     .then((user)=> createUserToken(req, user))
-    .then((token)=> res.json({token}))
+    .then((token)=> res.json({token: token, id: id, role: role}))
     .catch(next)
 })
 
 // Update: Edit an user by id
 router.put('/:id', requireToken, (req, res, next) => {
+    if(req.params.id.toString()===req.user._id.toString()) {
 	User.findByIdAndUpdate(
         { _id: req.params.id },
         req.body,
@@ -73,19 +87,26 @@ router.put('/:id', requireToken, (req, res, next) => {
             }
         })
         .catch(next)
+    }else {
+        res.sendStatus(401)
+    }
 });
 
 // Delete: Remove an user by id
 router.delete('/:id', requireToken, (req, res, next) => {
-	User.findByIdAndDelete({ _id: req.params.id })
-    .then((user) => {
-        if (user) {
-            res.json(user);
-        } else {
-            res.sendStatus(404)
-        }
-	})
-    .catch(next)
+    if(req.params.id.toString()===req.user._id.toString()) {
+        User.findByIdAndDelete({ _id: req.params.id })
+        .then((user) => {
+            if (user) {
+                res.json(user);
+            } else {
+                res.sendStatus(404)
+            }   
+        })
+        .catch(next)
+    } else {
+        res.sendStatus(401)
+    }
 });
 
 module.exports = router;

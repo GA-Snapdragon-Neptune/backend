@@ -19,10 +19,13 @@ const FoodTruckSchema = new Schema(
             description: String,
             imgURL: String
         } ],
-        ratings: Array,
+        ratings: [
+            Number
+        ],
         owner: {
             type: mongoose.Schema.Types.ObjectId,
-            ref: 'User'
+            ref: 'User',
+            // required: true
         },
         hours: [ {
             day: String,
