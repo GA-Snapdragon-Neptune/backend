@@ -76,6 +76,20 @@ router.put('/:id', requireToken, (req, res, next) => {
 	.catch(next)
 });
 
+// Update: Edit a food truck by id
+router.put('/:id/rating', (req, res, next) => {
+	FoodTruck.findByIdAndUpdate(
+		{ _id: req.params.id }, 
+		req.body.rating, 
+		{ new: true, })
+		.then((foodTruck) => {
+			foodTruck.ratings.push(req.body.rating)
+			foodTruck.save()
+			return res.status(201).json( { ratings: foodTruck.ratings } )
+		})
+		.catch(next)
+});
+
 // Delete: Remove a food truck by id
 router.delete('/:id',requireToken, (req, res, next) => {
 	// saves the requestor id
