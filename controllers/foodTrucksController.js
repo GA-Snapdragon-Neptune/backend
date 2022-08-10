@@ -33,6 +33,7 @@ router.post('/', requireToken, (req, res, next) => {
 	const requestor = req.user._id.toString()
 	User.findById({_id: requestor})
 	.then((user) => {
+		console.log(user.business)
 		if (user && user.business === true) {
 			FoodTruck.create(req.body)
 			.then((foodTruck) => {
