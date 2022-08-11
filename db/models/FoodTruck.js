@@ -31,6 +31,10 @@ const FoodTruckSchema = new Schema(
             day: String,
             hour: String
         }],
+        coordinate: {
+            lat: Number,
+            lng: Number,
+        },
         reviews: [reviewSchema]
     }
 )
