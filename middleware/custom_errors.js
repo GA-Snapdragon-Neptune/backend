@@ -38,7 +38,7 @@ class BadCredentialsError extends Error {
     super();
     this.name = 'BadCredentialsError';
     this.statusCode = 422;
-    this.message = 'The provided username or password is incorrect';
+    this.message = 'The provided username, email or password is incorrect';
   }
 }
 
